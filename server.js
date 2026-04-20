@@ -23,3 +23,47 @@ app.get('/employees', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
+// Lägg till ny anställd - Create
+app.post('/employees', async (req, res) => {
+    // Hämtar info från body
+    const { Name, Lastname, Jobtitle, Location, Dateofbirth } = req.body;
+    
+
+    // Skapar en tom array för at samla alla errors
+    let errors = [];
+
+    // Validering om något av fält är tomt
+    if (Name === '' || Lastname === '' || Jobtitle === '' || Location === '' || Dateofbirth === '') {
+        errors.push('Alla fält måste fyllas i');
+    }
+
+    // Kontrollerar att namn eller efternamn inte har specialtecken
+    if (/[!@#$%^&*()]/.test(Name) || /[!@#$%^&*()]/.test(Lastname)) {
+        errors.push('Namn och efternamn får inte innehålla specialtecken');
+    }
+
+    // Om valideringsfel returnerar errors array
+    if (errors.length > 0) {
+        return res.status(400).json({ errors });
+    }
+    
+
+    try {
+        // Lägger till ny anställd info
+        const [result] = await db.query(
+            'INSERT INTO employees (Name, Lastname, Jobtitle, Location, Dateofbirth) VALUES (?, ?, ?, ?, ?)',
+            [Name, Lastname, Jobtitle, Location, Dateofbirth]
+        );
+        // Visar meddelanden om anställd är sparad
+        res.status(201).json({ 
+            message: 'Ny anställd sparad',
+            id: result.insertId 
+        });
+    } catch (error) {
+        // Visar felmeddelande om något gick fel
+        res.status(500).json({ error: error.message });
+    }
+});
+
