@@ -1,10 +1,8 @@
-const mysql = require('mysql2');
+const mysql = require('mysql2/promise');
 
 // Skapar anslutning
 const connection = mysql.createConnection(process.env.MYSQL_URL);
 
-// Skapa promise
-const promiseConnection = connection.promise();
 
 
 
