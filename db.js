@@ -1,10 +1,11 @@
 const mysql = require('mysql2/promise');
 
-// Skapar anslutning
-const connection = mysql.createConnection(process.env.MYSQL_URL);
+// Skapar connection pool
+const db = mysql.createPool(process.env.MYSQL_URL);
 
+// Testar anslutningen på Railway
+db.getConnection()
+    .then(() => console.log('Databasansluten på Railway'))
+    .catch(err => console.error('Databasfel:', err.message));
 
-
-
-// Exporterar promise anslutning
-module.exports = promiseConnection;
+module.exports = db;
