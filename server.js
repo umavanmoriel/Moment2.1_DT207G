@@ -41,7 +41,7 @@ app.post('/employees', async (req, res) => {
 
     // Kontrollerar att namn eller efternamn inte har specialtecken
     if (/[!@#$%^&*()]/.test(Name) || /[!@#$%^&*()]/.test(Lastname)) {
-        errors.push('Namn och efternamn får inte innehålla specialtecken');
+        errors.push('Namn och efternamn får inte innehålla specialtecken som !@#$%^&*()');
     }
 
     // Om valideringsfel returnerar errors array
@@ -51,14 +51,14 @@ app.post('/employees', async (req, res) => {
     
 
     try {
-        // Lägger till ny anställd info
+        // Lägger till ny anställd info 
         const [result] = await db.query(
             'INSERT INTO employees (Name, Lastname, Jobtitle, Location, Dateofbirth) VALUES (?, ?, ?, ?, ?)',
             [Name, Lastname, Jobtitle, Location, Dateofbirth]
         );
         // Visar meddelanden om anställd är sparad
         res.status(201).json({ 
-            message: 'Ny anställd sparad',
+            message: 'Ny anställd är sparad',
             id: result.insertId 
         });
     } catch (error) {
@@ -67,3 +67,23 @@ app.post('/employees', async (req, res) => {
     }
 });
 
+
+// Tar bort en anställd - Delete
+app.delete('/employees/:id', async (req, res) => {
+    try {
+
+        // Tar bort en anställd med specifikt ID från tabellen employees 
+        const [result] = await db.query('DELETE FROM employees WHERE ID = ?', [req.params.id]);
+        
+
+        // Om ingen ID matchar då returneras felmeddelande 
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Anställd finns inte' });
+        }
+        res.json({ message: 'Anställd borttagen' });
+    } catch (error) {
+        // Visar felmeddelande om något gick fel
+        res.status(500).json({ error: error.message });
+
+    }
+});
