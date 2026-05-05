@@ -135,7 +135,7 @@ app.delete('/employees/:id', async (req, res) => {
 });
 
 
-// Starta servern
+// Startar servern
 app.listen(port, () => {
     console.log(`Servern körs på port ${port}`);
 });
