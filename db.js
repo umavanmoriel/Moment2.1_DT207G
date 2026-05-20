@@ -1,14 +1,11 @@
 const mysql = require('mysql2/promise');
 
 const connection = mysql.createPool({
-    host: 'sql.freedb.tech',
-    user: 'u_4w69tl',
-    password: 'hAVhqLcxF8wI',
-    port: 3306,
-    database: 'freedb_UwljZlRo',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
+    host: 'localhost',
+    user: 'root',
+    password: 'root',
+    port: 8889,
+    database: 'DT207G_Moment2',
 });
 
 // Testar anslutningen

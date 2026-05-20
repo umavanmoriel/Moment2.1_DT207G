@@ -1,15 +1,19 @@
 # DT207G Moment 2 - REST API
 
-Detta repository innehåller kod för ett REST API byggt med Express. APIet är byggt för att hantera anställda (employees) med grundläggande CRUD-funktionalitet (Create, Read, Update, Delete).
+Detta är en REST-webbtjänst byggd med **Node.js**, **Express** och **MySQL** (via MAMP). APIet är byggt för att hantera anställda (employees) med grundläggande CRUD-funktionalitet (Create, Read, Update, Delete).
 
 ## Länk
 
-(En liveversion av APIet finns tillgänglig på följande URL)[]
+(Localhost:3000)[http://localhost:3000/employees]
 
 ## Installation & Databas
 
 -- Klona repo **git clone https://github.com/umavanmoriel/Moment2.1_DT207G.git**
 -- Installera nödvändiga npm-paket **npm install**
+-- Starta MAMP och MySQL
+-- Öppna MAMP
+-- Klicka på Start Servers
+-- Kontrollera att MySQL körs på port 8889
 -- Kör installations skriptet för att skapa databas och tabell **node install.js**
 -- Starta servern **node server.js**
 -- Gå till **http://localhost:3000**
@@ -26,7 +30,6 @@ Installations-skriptet skapar en databas DT207G_Moment2 med tabellen **employees
 | employees | jobtitle | varchar(100) | NOT NULL |
 | employees | location | varchar(100) | NOT NULL |
 | employees | dateofbirth | DATE | NOT NULL |
-| employees | startdate | TIMESTAMP | DEFAULT CURRENT_TIMESTAMP |
 
 ## Användning
 
@@ -46,8 +49,7 @@ Ett anställd-objekt returneras/skickas som JSON med följande struktur:
    "Lastname": "Svensson",
    "Jobtitle": "Utvecklare",
    "Location": "Stockholm",
-   "Dateofbirth": "1990-01-01",
-   "Startdate": "2024-01-15T10:30:00.000Z"
+   "Dateofbirth": "1990-01-01"
 }
 ```
 

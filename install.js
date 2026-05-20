@@ -39,8 +39,7 @@ connection.connect((err) => {
                     Lastname VARCHAR(100) NOT NULL,
                     Jobtitle VARCHAR(100) NOT NULL,
                     Location VARCHAR(100) NOT NULL,
-                    Dateofbirth DATE NOT NULL,
-                    Startdate TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    Dateofbirth DATE NOT NULL
                 )
             `;
             
