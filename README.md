@@ -8,15 +8,15 @@ Detta är en REST-webbtjänst byggd med **Node.js**, **Express** och **MySQL** (
 
 ## Installation & Databas
 
--- Klona repo **git clone https://github.com/umavanmoriel/Moment2.1_DT207G.git**
--- Installera nödvändiga npm-paket **npm install**
--- Starta MAMP och MySQL
--- Öppna MAMP
--- Klicka på Start Servers
--- Kontrollera att MySQL körs på port 8889
--- Kör installations skriptet för att skapa databas och tabell **node install.js**
--- Starta servern **node server.js**
--- Gå till **http://localhost:3000**
+- Klona repo **git clone https://github.com/umavanmoriel/Moment2.1_DT207G.git**
+- Installera nödvändiga npm-paket **npm install**
+- Starta MAMP och MySQL
+- Öppna MAMP
+- Klicka på Start Servers
+- Kontrollera att MySQL körs på port 8889
+- Kör installations skriptet för att skapa databas och tabell **node install.js**
+- Starta servern **node server.js**
+- Gå till **http://localhost:3000**
 
 
 ## Databasstruktur
