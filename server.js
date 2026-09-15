@@ -13,35 +13,48 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json()); 
 
-// Hämta info om anställda från tabellen employees - Read
-app.get('/employees', async (req, res) => {
+// Hämta info om arbetserfarenheter från tabellen workexperience - Read
+app.get('/workexperience', async (req, res) => {
     try {
-        const [rows] = await db.query('SELECT * FROM employees');
-        // Skickar alla anställda i JSON-format
+        const [rows] = await db.query('SELECT * FROM workexperience');
+        // Skickar alla arbetserfarenheter i JSON-format
         res.json(rows); 
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 });
 
+// Hämta en specifik arbetserfarenhet - Read
+app.get('/workexperience/:id', async (req, res) => {
+    try {
+        const [rows] = await db.query('SELECT * FROM workexperience WHERE id = ?', [req.params.id]);
 
-// Lägg till ny anställd - Create
-app.post('/employees', async (req, res) => {
+        if (rows.length === 0) {
+            return res.status(404).json({ error: 'Arbetserfarenhet hittades inte' });
+        }
+        res.json(rows[0]);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
+// Lägg till ny arbetserfarenhet - Create
+app.post('/workexperience', async (req, res) => {
     // Hämtar info från body
-    const { Name, Lastname, Jobtitle, Location, Dateofbirth } = req.body;
-    
+    const { companyname, jobtitle, location, startdate, enddate, description } = req.body;
 
-    // Skapar en tom array för at samla alla errors
+    // Skapar en tom array för att samla alla errors
     let errors = [];
 
     // Validering om något av fält är tomt
-    if (Name === '' || Lastname === '' || Jobtitle === '' || Location === '' || Dateofbirth === '') {
+    if (!companyname || !jobtitle || !location || !startdate || !enddate || !description) {
         errors.push('Alla fält måste fyllas i');
     }
 
-    // Kontrollerar att namn eller efternamn inte har specialtecken
-    if (/[!@#$%^&*()]/.test(Name) || /[!@#$%^&*()]/.test(Lastname)) {
-        errors.push('Namn och efternamn får inte innehålla specialtecken som !@#$%^&*()');
+    // Kontrollerar att företagsnamn eller jobbtitel inte har specialtecken
+    if (/[!@#$%^&*()]/.test(companyname) || /[!@#$%^&*()]/.test(jobtitle)) {
+        errors.push('Företagsnamn och jobtitel får inte innehålla specialtecken som !@#$%^&*()');
     }
 
     // Om valideringsfel returnerar errors array
@@ -49,16 +62,15 @@ app.post('/employees', async (req, res) => {
         return res.status(400).json({ errors });
     }
     
-
     try {
-        // Lägger till ny anställd info 
+        // Lägger till ny arbetserfarenhet
         const [result] = await db.query(
-            'INSERT INTO employees (Name, Lastname, Jobtitle, Location, Dateofbirth) VALUES (?, ?, ?, ?, ?)',
-            [Name, Lastname, Jobtitle, Location, Dateofbirth]
+            'INSERT INTO workexperience (companyname, jobtitle, location, startdate, enddate, description) VALUES (?, ?, ?, ?, ?, ?)',
+            [companyname, jobtitle, location, startdate, enddate, description]
         );
-        // Visar meddelanden om anställd är sparad
+        // Visar meddelande om arbetserfarenhet är sparad
         res.status(201).json({ 
-            message: 'Ny anställd är sparad',
+            message: 'Ny arbetserfarenhet är sparad',
             id: result.insertId 
         });
     } catch (error) {
@@ -68,24 +80,24 @@ app.post('/employees', async (req, res) => {
 });
 
 
-// Uppdaterar en anställd - Update
-app.put('/employees/:id', async (req, res) => {
+// Uppdaterar en arbetserfarenhet - Update
+app.put('/workexperience/:id', async (req, res) => {
 
     // Hämtar info från body 
-    const { Name, Lastname, Jobtitle, Location, Dateofbirth } = req.body;
+    const { companyname, jobtitle, location, startdate, enddate, description } = req.body;
     const id = req.params.id;
 
-    // Skapar en tom array för at samla alla errors
+    // Skapar en tom array för att samla alla errors
     let errors = [];
 
     // Validering om något av fält är tomt
-    if (!Name || !Lastname || !Jobtitle || !Location || !Dateofbirth) {
+    if (!companyname || !jobtitle || !location || !startdate || !enddate || !description) {
         errors.push('Alla fält måste fyllas i');
     }
 
-    // Kontrollerar att namn eller efternamn inte har specialtecken
-    if (/[!@#$%^&*()]/.test(Name) || /[!@#$%^&*()]/.test(Lastname)) {
-        errors.push('Namn och efternamn får inte innehålla specialtecken !@#$%^&*()');
+    // Kontrollerar att företagsnamn eller jobtitel inte har specialtecken
+    if (/[!@#$%^&*()]/.test(companyname) || /[!@#$%^&*()]/.test(jobtitle)) {
+        errors.push('Företagsnamn och jobbtitel får inte innehålla specialtecken !@#$%^&*()');
     }
 
     // Om valideringsfel returnerar errors array
@@ -96,17 +108,16 @@ app.put('/employees/:id', async (req, res) => {
     try {
         const [result] = await db.query(
             // UPDATE ändrar befintlig data
-            'UPDATE employees SET Name = ?, Lastname = ?, Jobtitle = ?, Location = ?, Dateofbirth = ? WHERE ID = ?',
+            'UPDATE workexperience SET companyname = ?, jobtitle = ?, location = ?, startdate = ?, enddate = ?, description = ? WHERE id = ?',
             // Ersätter befintlig data
-            [Name, Lastname, Jobtitle, Location, Dateofbirth, id]
-
+            [companyname, jobtitle, location, startdate, enddate, description, id]
         );
-        // Returnerar fel om anställd finns inte
+        // Returnerar fel om arbetserfarenhet inte finns
         if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Anställd hittades inte' });
+            return res.status(404).json({ error: 'Arbetserfarenhet hittades inte' });
         }
-        // Visar att anställd info är uppdaterad
-        res.json({ message: 'Anställd uppdaterad' });
+        // Visar att arbetserfarenhet är uppdaterad
+        res.json({ message: 'Arbetserfarenhet uppdaterad' });
     } catch (error) {
         // Visar felmeddelande om något gick fel
         res.status(500).json({ error: error.message });
@@ -114,23 +125,20 @@ app.put('/employees/:id', async (req, res) => {
 });
 
 
-// Tar bort en anställd - Delete
-app.delete('/employees/:id', async (req, res) => {
+// Tar bort en arbetserfarenhet - Delete
+app.delete('/workexperience/:id', async (req, res) => {
     try {
-
-        // Tar bort en anställd med specifikt ID från tabellen employees 
-        const [result] = await db.query('DELETE FROM employees WHERE ID = ?', [req.params.id]);
-        
+        // Tar bort en arbetserfarenhet med specifikt ID från tabellen workexperience 
+        const [result] = await db.query('DELETE FROM workexperience WHERE id = ?', [req.params.id]);
 
         // Om ingen ID matchar då returneras felmeddelande 
         if (result.affectedRows === 0) {
-            return res.status(404).json({ error: 'Anställd med angivet ID finns inte' });
+            return res.status(404).json({ error: 'Arbetserfarenhet med angivet ID finns inte' });
         }
-        res.json({ message: 'Anställd borttagen' });
+        res.json({ message: 'Arbetserfarenhet borttagen' });
     } catch (error) {
         // Visar felmeddelande om något gick fel
         res.status(500).json({ error: error.message });
-
     }
 });
 

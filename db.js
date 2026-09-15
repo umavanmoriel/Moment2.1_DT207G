@@ -8,8 +8,8 @@ const connection = mysql.createPool({
     database: 'DT207G_Moment2',
 });
 
-// Testar anslutningen
-connection.getConnection()
+// Testar anslutning
+connection.query('SELECT 1')
     .then(() => console.log('Ansluten till databasen DT207G_Moment2'))
     .catch(err => console.error('Kunde inte ansluta:', err.message));
 

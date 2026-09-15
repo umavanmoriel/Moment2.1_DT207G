@@ -15,7 +15,7 @@ connection.connect((err) => {
     }
 
     console.log("Ansluten till MySQL!");
-    
+
     // Skapa databasen
     connection.query("CREATE DATABASE IF NOT EXISTS DT207G_Moment2", (err) => {
         if (err) {
@@ -23,32 +23,33 @@ connection.connect((err) => {
             return;
         }
         console.log("Databas 'DT207G_Moment2' skapad!");
-        
+
         // Byt till DT207G_Moment2-databasen
-        connection.changeUser({database: 'DT207G_Moment2'}, (err) => {
+        connection.changeUser({ database: 'DT207G_Moment2' }, (err) => {
             if (err) {
                 console.error("Kunde inte byta till DT207G_Moment2:", err);
                 return;
             }
-            
-            // Skapa tabellen
+
+            // Skapa tabellen workexperience
             const skapaTabell = `
-                CREATE TABLE IF NOT EXISTS employees (
-                    ID INT PRIMARY KEY AUTO_INCREMENT,
-                    Name VARCHAR(100) NOT NULL,
-                    Lastname VARCHAR(100) NOT NULL,
-                    Jobtitle VARCHAR(100) NOT NULL,
-                    Location VARCHAR(100) NOT NULL,
-                    Dateofbirth DATE NOT NULL
+                CREATE TABLE IF NOT EXISTS workexperience (
+                    id INT PRIMARY KEY AUTO_INCREMENT,
+                    companyname VARCHAR(100) NOT NULL,
+                    jobtitle VARCHAR(100) NOT NULL,
+                    location VARCHAR(100) NOT NULL,
+                    startdate DATE NOT NULL,
+                    enddate DATE NOT NULL,
+                    description TEXT NOT NULL
                 )
             `;
-            
+
             connection.query(skapaTabell, (err) => {
                 if (err) {
                     console.error("Kunde inte skapa tabell:", err);
                     return;
                 }
-                console.log("Tabell 'employees' skapad!");
+                console.log("Tabell 'workexperience' skapad!");
                 console.log("Allt klart! Starta servern med: node server.js");
                 connection.end();
             });
